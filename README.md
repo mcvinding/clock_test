@@ -1,5 +1,5 @@
 # Clock test
-Introspective reports based on a fast rotating clock as made popular by Libet, B., Gleason, C.A., Wright, E.W., & Pearl, D.K. (1983). Time of conscious intention to act in relation to onset of cerebral activity (readiness-potential). _Brain, 106(3), 623–642.
+Introspective reports based on a fast rotating clock as made popular by Libet, B., Gleason, C.A., Wright, E.W., & Pearl, D.K. (1983). Time of conscious intention to act in relation to onset of cerebral activity (readiness-potential). *Brain, 106(3)*, 623–642.
 
 This version is written in PsychoPy (http://www.psychopy.org/). It was first written for the study, though a different version was used in the final study:
 
