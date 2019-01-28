@@ -70,7 +70,9 @@ moveKeys = {
 }
 
 errorKeys = ['f','num_subtract']
-ansKeys = ['space','insert','return']
+leftKeys = ['d']
+rightKeys = ['k']
+ansKeys = ['return']
 timeOutKeys = ['y','n','num_add']
 quitKeys = ['q','esc','escape']
 
@@ -206,7 +208,9 @@ def runBlock(condition, training, letterMode):
 #    timeOutMeanListAverage = 1
     trialCounter = 0
 #    timeOutScale = 1
-    triggerList = [1]           # Trigger codes to send to parallel port
+#    triggerList = [1]           # Trigger codes to send to parallel port
+    leftTrigger = 1
+    rightTrigger = 2
 
 
     # Set up .csv save function
@@ -219,7 +223,7 @@ def runBlock(condition, training, letterMode):
     mainText.setText(instructions[condition])
     mainText.draw()
     win.flip()
-    event.waitKeys() #    event.waitKeys(ansKeys)
+    event.waitKeys(keyList=ansKeys) #    event.waitKeys(ansKeys)
 
 
     # Loop through trials
@@ -255,12 +259,20 @@ def runBlock(condition, training, letterMode):
             if condition in ['W-press','M-press','W-press1','M-press1']:
 
                 # Log event
-                response = event.getKeys(keyList=ansKeys+quitKeys, timeStamped=trialClock)
+                response = event.getKeys(keyList=leftKeys+rightKeys+ansKeys+quitKeys, timeStamped=trialClock)
                 if len(response) and not trial['pressOnset']:       # Only react on first response to this trial
                     if response[-1][0] in quitKeys: core.quit()
                     trial['pressOnset'] = int((response[-1][1])*msScale)/msScale
                     trial['pressAngle'] = int((dotAngle-dotStep)*degScale)/degScale
+                    
+                    # Left/right trigger based on response
+                    if response[-1][0] in leftKeys:
+#                        trigger(leftTrigger)
+                        beep.play()                                        # Sound trigger
 
+                    elif response[-1][0] in rightKeys:
+#                        trigger(leftTrigger)
+                        beep.play()                                        # Sound trigger
 #                    trigger(triggerList[0])                            # Parllel trigger
 #                    beep.play()                                        # Sound trigger
 
@@ -313,6 +325,7 @@ def runBlock(condition, training, letterMode):
             circle.draw()
             questionText.draw()
             visual.TextStim(win, text='+', color='white', height=textSize, antialias=False).draw()
+            beep.play()
 
             if trial['timeOut'] == 'yes':
                 drawDot(dotAngle,True)
@@ -321,8 +334,7 @@ def runBlock(condition, training, letterMode):
             win.flip()
 
             # Handle responses: quit, move or answer
-            response = event.waitKeys() #             response = event.waitKeys(moveKeys.keys()+ansKeys+quitKeys)
-            print(response)
+            response = event.waitKeys(keyList=list(moveKeys.keys())+ansKeys+quitKeys) #             response = event.waitKeys(moveKeys.keys()+ansKeys+quitKeys)
             if response[-1] in quitKeys: core.quit()
             if response[-1] in moveKeys: 
                 dotAngle += moveKeys[response[-1]]
@@ -344,7 +356,7 @@ def runBlock(condition, training, letterMode):
 
             while True:
                 # Handle responses: quit, move or answer
-                response = event.waitKeys() #                response = event.waitKeys(timeOutKeys+errorKeys+quitKeys)
+                response = event.waitKeys(keyList=timeOutKeys+errorKeys+quitKeys) #                response = event.waitKeys(timeOutKeys+errorKeys+quitKeys)
 
 #                print('response: '+response)
                 if response[-1] in quitKeys: 
@@ -391,10 +403,9 @@ conditions = ['W-press','M-press']
 shuffle(conditions)
 conditionsT = ['M-press','W-press']
 
-# Real experiment
-
-#for condition in conditionsT:
-#    runBlock(condition, training=True, letterMode=False)
+# Run the experiment
+for condition in conditionsT:
+    runBlock(condition, training=True, letterMode=False)
 trainingIsOver()
 for condition in conditions: 
     runBlock(condition, training=False, letterMode=False)
