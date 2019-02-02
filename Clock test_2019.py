@@ -79,7 +79,7 @@ quitKeys = ['q','esc','escape']
 #letters = ['b','c','d','f','g','h','j','k','n','p','r','s','t','v','w','x','z']
 
 # Data containers for each trial
-dataCategories = ['id','condition','no','dotDelay','toneOnset','toneAngle','pressOnset','pressAngle','ansAngle','ansTime','timeOut','timeOutOnset','timeOutQuestion','stopCharacter','samplesToLastIdenticalCharacter','userError']
+dataCategories = ['id','condition','no','dotDelay','toneOnset','toneAngle','pressOnset','pressAngle','ansAngle','ansTime','timeOut','timeOutOnset','timeOutQuestion','stopCharacter','samplesToLastIdenticalCharacter','userError','response']
 dataDict = dict(zip(dataCategories,['' for i in dataCategories]))
 
 # Set monitor variables
@@ -208,15 +208,16 @@ def runBlock(condition, training, letterMode):
 #    timeOutMeanListAverage = 1
     trialCounter = 0
 #    timeOutScale = 1
-#    triggerList = [1]           # Trigger codes to send to parallel port
+
+    # Trigger codes to send to parallel port
     leftTrigger = 1
     rightTrigger = 2
-
+    startTrigger = 64
 
     # Set up .csv save function
     if not training:
         saveFile = saveFolder+'/subject_' +str(subjectID)+'_'+condition+'.csv'          # Filename for save-data
-        csvWriter = csv.writer(open(saveFile, 'w'), delimiter=';').writerow            # The writer function to csv
+        csvWriter = csv.writer(open(saveFile, 'w', newline=''), delimiter=';').writerow            # The writer function to csv
         csvWriter(dataCategories)                                                       # Writes title-row in csv           
 
     # Show instruction
@@ -245,7 +246,12 @@ def runBlock(condition, training, letterMode):
         TimeOutClock.reset()
         timeOutLogic = False
         trialCounter = trialCounter + 1
-
+        
+        
+        # Send start trigger
+#       trigger(startTrigger)                   # COMMENT !!!
+        print(startTrigger)
+        
         while True:
             dotAngle += dotStep
             if dotAngle > 360:
@@ -267,17 +273,15 @@ def runBlock(condition, training, letterMode):
                     
                     # Left/right trigger based on response
                     if response[-1][0] in leftKeys:
-#                        trigger(leftTrigger)
-                        beep.play()                                        # Sound trigger
-
+#                        trigger(leftTrigger)                   # COMMENT !!
+                        print(rightTrigger)
+                        trial['response'] = rightTrigger
                     elif response[-1][0] in rightKeys:
-#                        trigger(leftTrigger)
-                        beep.play()                                        # Sound trigger
-#                    trigger(triggerList[0])                            # Parllel trigger
-#                    beep.play()                                        # Sound trigger
-
-                    trial['toneOnset'] = int((trialClock.getTime())*msScale)/msScale
-                    trial['toneAngle'] = int((dotAngle)*degScale)/degScale
+#                        trigger(leftTrigger)                   # COMMENT !!
+                        print(leftTrigger)
+                        trial['response'] = rightTrigger
+#                    trial['toneOnset'] = int((trialClock.getTime())*msScale)/msScale
+#                    trial['toneAngle'] = int((dotAngle)*degScale)/degScale
 
 #                    for wordInList in range(len(letterList)):
 #                        if letterBlock[letterList[letterCounter]] == letterBlock[letterListOld[wordInList]]:
@@ -316,16 +320,14 @@ def runBlock(condition, training, letterMode):
                     break
                 dotDelayFrames += 1
 
-                
-
         # Subjects selects location of target event
         dotAngle = uniform(0,360)
         trialClock.reset()
+        
         while True:
             circle.draw()
             questionText.draw()
             visual.TextStim(win, text='+', color='white', height=textSize, antialias=False).draw()
-            beep.play()
 
             if trial['timeOut'] == 'yes':
                 drawDot(dotAngle,True)
