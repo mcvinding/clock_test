@@ -20,8 +20,15 @@ except ImportError:
 #---------------- VARS -----------------
 #-----------------------------------------
 # Trial and data options
-trainingTrials = 1          # Number of initial training-trials per block
-BlockTrials = 5             # Number of trials per block
+condition_keys = ['W-press','M-press']              # Keys to identify what type of block to run
+blockRepetitions = 2                                # Number of times each block will occur
+trainingCondition_keys = ['M-press','W-press']      # Keys to identify what type of block to run in training
+trainingBlockRepetitions = 1                        # Number of times each block will occur in training
+
+trainingTrials = 1                                  # Number of initial training-trials per block
+BlockTrials = 5                                     # Number of trials per block
+
+# Misc options
 toneOnset = [1.5, 7]        # [earliest, latest] onset range of tone in singleTone condition (in seconds)
 toneDelay = 0               # Delay of tone (in seconds) relative to response after response (in seconds)
 dotDelay = [36, 60]         # [earliest, latest] duration of dot, after last event (in frames)
@@ -106,7 +113,7 @@ if not os.path.isdir(saveFolder):
 
 # Clocks
 trialClock = core.Clock()
-letterClock = core.Clock()
+#letterClock = core.Clock()
 soundClock = core.Clock()
 TimeOutClock = core.Clock()
 
@@ -189,25 +196,35 @@ def windowsBeep():
 def runBlock(condition, training, letterMode):
     trialList = makeBlock(condition,training)
     
-    # Letter mode
-#    letterListLength = 6
-#    randomLetterListSetPoint = randint(0,len(letters)-letterListLength-1)
-#    letterBlock = letters[randomLetterListSetPoint:randomLetterListSetPoint+letterListLength]
-#    letterCounter = 0
-#    letterOffsetMinimum = 2
-#    letterOffsetMaximum = letterListLength/2
-#    letterInterval = len(letterBlock)-letterOffsetMinimum
-#    letterList = range(len(letterBlock))
-#    shuffle(letterList)
-#    letterListOld = letterList
+    # Shorten in case of several blocks
+    if 'W-press' in condition:
+        conid = 'W-press'
+    elif 'M-press' in condition:
+        conid = 'M-press'
+    # Add more if needed...
+    
+#    # Letter mode
+#    if letterMode:
+#        letterListLength = 6
+#        randomLetterListSetPoint = randint(0,len(letters)-letterListLength-1)
+#        letterBlock = letters[randomLetterListSetPoint:randomLetterListSetPoint+letterListLength]
+#        letterCounter = 0
+#        letterOffsetMinimum = 2
+#        letterOffsetMaximum = letterListLength/2
+#        letterInterval = len(letterBlock)-letterOffsetMinimum
+#        print(letterBlock)
+#        letterList = range(len(letterBlock))
+#        print(letterList)
+#        shuffle(letterList)
+#        letterListOld = letterList
 
     # Time out
-#    timeOutLogic = False
-#    timeOutCounter = 0
-#    timeOutListCounter = 0
-#    timeOutMeanListAverage = 1
+    timeOutLogic = False
+    timeOutCounter = 0
+    timeOutListCounter = 0
+    timeOutMeanListAverage = 1
     trialCounter = 0
-#    timeOutScale = 1
+    timeOutScale = 1
 
     # Trigger codes to send to parallel port
     leftTrigger = 1
@@ -221,7 +238,7 @@ def runBlock(condition, training, letterMode):
         csvWriter(dataCategories)                                                       # Writes title-row in csv           
 
     # Show instruction
-    mainText.setText(instructions[condition])
+    mainText.setText(instructions[conid])
     mainText.draw()
     win.flip()
     event.waitKeys(keyList=ansKeys) #    event.waitKeys(ansKeys)
@@ -233,7 +250,7 @@ def runBlock(condition, training, letterMode):
         if training: 
             mainText.setText('TRAINING')                                                # Show "TRAINING" instead of prime in training condition
         
-        questionText.setText(questions[condition])                                      # Set text of question
+        questionText.setText(questions[conid])                                      # Set text of question
         dotAngle = uniform(0,360)                                                       # Angle of dot in degrees
         dotDelayFrames = 0                                                              # When not 0, indicates that the last event has occurred and the number of frames since that event
 
@@ -242,11 +259,10 @@ def runBlock(condition, training, letterMode):
         # Show rotating dot and handle events
         event.clearEvents()
         trialClock.reset()
-        letterClock.reset()
+#        letterClock.reset()
         TimeOutClock.reset()
         timeOutLogic = False
         trialCounter = trialCounter + 1
-        
         
         # Send start trigger
 #       trigger(startTrigger)                   # COMMENT !!!
@@ -262,7 +278,7 @@ def runBlock(condition, training, letterMode):
             win.flip()
 
             # Record press
-            if condition in ['W-press','M-press','W-press1','M-press1']:
+            if conid in ['W-press','M-press']: #condition in ['W-press','M-press','W-press1','M-press1']:
 
                 # Log event
                 response = event.getKeys(keyList=leftKeys+rightKeys+ansKeys+quitKeys, timeStamped=trialClock)
@@ -286,12 +302,12 @@ def runBlock(condition, training, letterMode):
 #                    for wordInList in range(len(letterList)):
 #                        if letterBlock[letterList[letterCounter]] == letterBlock[letterListOld[wordInList]]:
 #                            wordInListNumberOfDifferentCharactersBetween = (len(letterList)-wordInList) + letterCounter - 1
-                    #print wordInListMemo
-                    #print letterCounter
+#                    #print wordInListMemo
+#                    #print letterCounter
 #                    trial['stopCharacter'] = letterBlock[letterList[letterCounter]]
 #                    trial['samplesToLastIdenticalCharacter'] = wordInListNumberOfDifferentCharactersBetween
 
-                    if condition in ['W-press','M-press','W-press1','M-press1']: #or 'singlePressTimeOut': 
+                    if conid in ['W-press','M-press']: #or 'singlePressTimeOut': 
                         dotDelayFrames = 1   # Mark as last event
 
             # Play beep when time is up and mark as last event
@@ -350,7 +366,7 @@ def runBlock(condition, training, letterMode):
                 break
 
         # Additional question    
-        if condition in ['W-press','M-press','W-press1','M-press1']:
+        if conid in ['W-press','M-press']: #condition in ['W-press','M-press','W-press1','M-press1']:
             waitTimeBeforeNextTrial = 0.75
             questionText.setText('Press (Y) to continue \n\n (F) if error in last trial')                                      # !!!!!! Set text of question text !!!!!!!
             questionText.draw()
@@ -397,13 +413,12 @@ def ThankYou():
     win.flip()
     event.waitKeys() #    event.waitKeys(ansKeys)
 
-
 #---------- RUN EXPERIMENT -------------
 #---------------------------------------
 # Make random order of conditions and run experiment
-conditions = ['W-press','M-press']
+conditions = [x + str(y+1) for x in condition_keys for y in range(blockRepetitions)]
 shuffle(conditions)
-conditionsT = ['M-press','W-press']
+conditionsT = [x + str(y+1) for x in trainingCondition_keys for y in range(trainingBlockRepetitions)]
 
 # Run the experiment
 for condition in conditionsT:
