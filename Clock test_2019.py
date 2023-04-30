@@ -119,7 +119,7 @@ TimeOutClock = core.Clock()
 
 #-------------- STIMULI ----------------
 #---------------------------------------
-win = visual.Window(monitor=myMon, size=myMon.getSizePix(), fullscr=True, allowGUI=False, color='black', units='deg')                               # Change fullscreen here: " fullscr=True/False "
+win = visual.Window(monitor=myMon, size=myMon.getSizePix(), fullscr=False, allowGUI=False, color='black', units='deg')                               # Change fullscreen here: " fullscr=True/False "
 mainText = visual.TextStim(win=win, height=textSize, color='white')
 questionText = visual.TextStim(win=win, pos=(0, circleRadius*2), height=textSize, color='white')
 clockDot = visual.PatchStim(win=win, mask="circle", color='#0000FF', tex=None, size=dotSize)

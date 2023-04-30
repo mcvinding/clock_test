@@ -1,0 +1,5 @@
+# Gitignore
+
+__pycache__
+data/
+util/.Rhistory
