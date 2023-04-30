@@ -10,9 +10,9 @@ The script was written 2012-2014 in PsychoPy2. The current version is re-written
 ## Use
 The task is found in the script `Clock test_2019.py`. 
 
-**Important:** bBefore you use the script you should adjust the settings in the script to match how you want to run the script. E.g., adjust the screen setting to fit your hardware and experimental setup. Then set the number of trials and conditions.
+**Important:** before you use the script you should adjust the settings in the script to match how you want to run the script. E.g., adjust the screen setting to fit your hardware and experimental setup. Then set the number of trials and conditions.
 
-The current version [2023-04-30] has instructions for the "W-time" and "M-time" conditions. To choose what to run change the argument `condition_keys`. Can be `['W-press','M-press']`
+The current version [*2023-04-30*] has instructions for the "W-time" and "M-time" conditions. To choose what to run change the argument `condition_keys`. Can be `['W-press','M-press']`
 
 ## Permissions
 The scripts are free to use following the BSD 2-Clause License.
