@@ -1,34 +1,126 @@
-# Clock test
-This repository conatins task scripts for obtaining introspective reports based on a fast rotating clock as made popular by Libet, B., Gleason, C.A., Wright, E.W., & Pearl, D.K. (1983). Time of conscious intention to act in relation to onset of cerebral activity (readiness-potential). *Brain, 106(3)*, 623–642.
+# Clock Test - Libet Clock Task
 
-This version is written in PsychoPy (http://www.psychopy.org/). It was first used for the study:
+A user-friendly implementation of the classic Libet clock task for studying the timing of conscious intention. This repository contains task scripts that present participants with a fast-rotating clock and collect introspective reports about when they experienced the intention to act.
+
+## What is the Libet Clock Task?
+
+The Libet clock task is a psychological experiment that investigates the relationship between conscious intention and brain activity. Participants watch a dot rotate around a clock face and report when they first experienced the intention to perform an action (like pressing a button).
+
+This implementation is based on the classic study by Libet, B., Gleason, C.A., Wright, E.W., & Pearl, D.K. (1983) and was originally developed for:
 
 > Vinding, M.C., Pedersen, M.N., & Overgaard, M. (2013). Unravelling intention: Distal intentions increase the subjective sense of agency. *Consciousness and Cognition, 22(3)*, 810–815. https://doi.org/10.1016/j.concog.2013.05.003
 
-The script was written 2012-2014 in PsychoPy2. The current version is re-written 2018-2023 for PsychoPy3.
+## Prerequisites
 
-## Use
-The task is found in the script `Clock test_2019.py`. 
+Before running the experiment, you'll need:
 
-**Important:** before you use the script you should adjust the settings in the script to match how you want to run the script. E.g., adjust the screen setting to fit your hardware and experimental setup. Then set the number of trials and conditions.
+- **Python 3.x** with the following packages:
+  - PsychoPy (version 3.x recommended)
+  - NumPy
+  - Standard Python libraries (math, random, os, csv)
+- **A computer monitor** (settings will need to be configured for your display)
+- **Input device** (keyboard for participant responses)
 
-The current version [*2023-04-30*] has instructions for the "W-time" and "M-time" conditions. To choose what to run change the argument `condition_keys`. Can be `['W-press','M-press']`
+## Quick Start
 
-## Permissions
-The scripts are free to use following the BSD 2-Clause License.
+### 1. Installation
+```bash
+# Install PsychoPy (if not already installed)
+pip install psychopy
+```
 
-If you use the script or modified versions of the script in your research please cite the paper above in your methods section, e.g.:
+### 2. Basic Configuration
 
-> _"We used a modified open-source version of the Libet-clock task (Libet et al., 1983) originally used in Vinding et al. (2013) written in PsychoPy (Peirce et al. 2019)"_
+Open the file `Clock test_2019.py` and adjust these key settings near the top of the file:
 
-If relevant, add a link to this GitHub repository in the Code Availability section of your paper.
+**Display Settings** (lines ~36-42):
+```python
+monDistance = 70        # Distance from participant to monitor (in cm)
+monWidth = 30          # Width of your monitor (in cm)
+circleRadius = 2       # Size of the clock circle (adjust if too big/small)
+```
 
-## Disclaimer
-I provide no guarantee or warranty.
+**Experiment Settings** (lines ~23-29):
+```python
+condition_keys = ['W-press','M-press']    # Which conditions to run
+blockRepetitions = 2                      # How many times to repeat each condition
+BlockTrials = 5                          # Number of trials per block
+```
 
-The "letterMode" used in the paper listed above is not working in the current version [2019-02-21].
+**Window Settings** (line ~118):
+```python
+fullscr=False    # Change to True for fullscreen mode
+```
 
-This task does not measure free will no matter what people claim.
+### 3. Running the Experiment
+
+```bash
+python "Clock test_2019.py"
+```
+
+The experiment includes:
+- **Training trials** to help participants understand the task
+- **Two main conditions**:
+  - **W-press**: Report when you first *intended* to press
+  - **M-press**: Report when you actually *pressed* the button
+
+## Understanding the Conditions
+
+- **W-press (Intention condition)**: Participants report the clock position when they first experienced the intention to press a button
+- **M-press (Movement condition)**: Participants report the clock position when they actually pressed the button
+
+These conditions help researchers study the timing difference between conscious intention and actual movement.
+
+## Data Output
+
+The experiment automatically saves data to CSV files in the same directory:
+- Filename format: `subject_[ID]_[condition].csv`
+- Contains trial-by-trial data including response times and clock positions
+- Use the included R script in `util/import.R` for data analysis
+
+## Troubleshooting
+
+**Common Issues:**
+
+- **"Module not found" errors**: Make sure PsychoPy and NumPy are installed
+- **Window doesn't appear**: Check your `fullscr` and monitor settings
+- **Clock appears too small/large**: Adjust `circleRadius` in the configuration
+- **Audio issues on Windows**: The script may show timing warnings for `winsound` - this is expected
+
+**Need Help?**
+- Check that your Python version is compatible with PsychoPy 3.x
+- Ensure your monitor settings match your actual hardware
+- For research use, test thoroughly with your specific setup
+
+## License and Usage
+This software is free to use under the **BSD 2-Clause License**.
+
+### Citation
+
+If you use this software in your research, please cite the original paper in your methods section:
+
+> *"We used a modified open-source version of the Libet-clock task (Libet et al., 1983) originally used in Vinding et al. (2013) written in PsychoPy (Peirce et al. 2019)"*
+
+Consider adding a link to this GitHub repository in the Code Availability section of your paper.
+
+## Important Notes
+
+- This software comes with **no warranty or guarantee**
+- The "letterMode" feature from the original 2013 paper is not available in the current version
+- Test thoroughly with your specific experimental setup before collecting research data
+- This task measures timing judgments of intention and action, not "free will" per se
+
+## Version History
+
+- **2012-2014**: Original version written in PsychoPy2
+- **2018-2023**: Rewritten and updated for PsychoPy3 compatibility
+- **Current**: Stable version with W-press and M-press conditions
 
 ## Contact
-For questions and more information contact: mikkelcv@drcmr.dk
+
+For questions, bug reports, or suggestions:
+**Email**: mikkelcv@drcmr.dk
+
+---
+
+*Happy experimenting! 🧠⏰*
