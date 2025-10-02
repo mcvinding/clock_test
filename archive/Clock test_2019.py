@@ -20,7 +20,7 @@ except ImportError:
 #---------------- VARS -----------------
 #-----------------------------------------
 # Trial and data options
-condition_keys = ['W-press','M-press']              # Keys to identify what type of block to run
+condition_keys = ['W-press','M-press']              # Keys to identify what type of block to run. [what are the options?] ['W-press','M-press', 'singleTone']
 blockRepetitions = 2                                # Number of times each block will occur
 trainingCondition_keys = ['M-press','W-press']      # Keys to identify what type of block to run in training
 trainingBlockRepetitions = 1                        # Number of times each block will occur in training
@@ -46,6 +46,9 @@ tics = 12                   # Number of tics on circle
 # Sound
 beepHz = 1000               # Frequency of sound
 beepDuration = 0.1          # Duration (in seconds)
+
+# Debug options
+fullscr = False             # Run in fullscreen mode
 
 # Approximations
 msScale = 1000
@@ -119,7 +122,7 @@ TimeOutClock = core.Clock()
 
 #-------------- STIMULI ----------------
 #---------------------------------------
-win = visual.Window(monitor=myMon, size=myMon.getSizePix(), fullscr=False, allowGUI=False, color='black', units='deg')                               # Change fullscreen here: " fullscr=True/False "
+win = visual.Window(monitor=myMon, size=myMon.getSizePix(), fullscr=fullscr, allowGUI=False, color='black', units='deg')   # Change fullscreen here: " fullscr=True/False "
 mainText = visual.TextStim(win=win, height=textSize, color='white')
 questionText = visual.TextStim(win=win, pos=(0, circleRadius*2), height=textSize, color='white')
 clockDot = visual.PatchStim(win=win, mask="circle", color='#0000FF', tex=None, size=dotSize)
@@ -148,7 +151,7 @@ win.clearBuffer()
 # Make a list of trials (dictionaries) given a condition
 def makeBlock(condition,training):
     if training == True:
-        conditionRep = trainingTrials                                                               # Set number of training repetitions? 
+        conditionRep = trainingTrials                                                            # Set number of training repetitions? 
     else:
         conditionRep = BlockTrials                                                               # Set number of repetitions? 
         
