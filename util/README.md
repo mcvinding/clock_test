@@ -19,7 +19,7 @@ clock_test/
 └── data/                 # Raw CSV data files
 ```
 
-## Configurati
+## Initial configuration
 Before running the script, you should change the `datapath` and `subjects` variables in the import script to match the locatin on your machine and the id codes of your research participants:
 ```r
 # Data directory path
@@ -66,14 +66,21 @@ The script creates a consolidated dataset (`clock.data`) containing:
 | Variable | Type | Description |
 |----------|------|-------------|
 | `id` | factor | Participant identifier |
-| `condition` | factor | Original condition name |
-| `condition_clean` | factor | Standardized condition name without numbers |
-| `ansAngle` | numeric | Response angle (potentially recalculated) |
-| `pressAngle` | numeric | Actual press angle (potentially recalculated) |
-| `errAngle` | numeric | Angular error in degrees |
-| `errTime` | numeric | Temporal error in milliseconds |
-| `recalc` | logical | Boolean indicating if angle recalculation was performed |
+| `condition` | factor | Original condition name with block numbers |
+| `no` | numeric | Trial number within block |
+| `dotDelay` | numeric | Duration of dot display after last event (in frames) |
+| `toneOnset` | numeric | Time of tone onset since trial start |
+| `toneAngle` | numeric | Angle of dot when tone occurred |
+| `pressOnset` | numeric | Time of button press since trial start |
+| `pressAngle` | numeric | Angle of dot when button was pressed (potentially recalculated) |
+| `ansAngle` | numeric | Participant's response angle on clock (potentially recalculated) |
+| `ansTime` | numeric | Response time for angle selection |
 | `userError` | logical | Boolean flag for user-identified errors |
+| `response` | numeric | Response trigger code |
+| `recalc` | logical | Boolean indicating if angle recalculation was performed for boundary crossings |
+| `errAngle` | numeric | Angular "error" in degrees (ansAngle - pressAngle OR toneAngle) |
+| `errTime` | numeric | Reported "error" from event in milliseconds |
+| `condition_clean` | factor | Standardized condition name without trailing numbers |
 
 ## Usage
 

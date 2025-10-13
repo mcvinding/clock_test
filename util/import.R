@@ -35,15 +35,26 @@ for (ff in in.files){
   }
 
   temp.dat <- temp.dat[,-(11:15)]    # Remove unnecessary columns (for now)
-    
-  # Recalculate angles and errors
-  recalc.1 <- ifelse(temp.dat$ansAngle < 100 & temp.dat$pressAngle > 270,T,F)
-  temp.dat$ansAngle[recalc.1] <- temp.dat$ansAngle[recalc.1]+360               # +1,+H
-  recalc.2 <- ifelse(temp.dat$ansAngle>260 & temp.dat$pressAngle<100,T,F)
-  temp.dat$pressAngle[recalc.2] <- temp.dat$pressAngle[recalc.2]+360           # +H,+1    
-  temp.dat$recalc <- recalc.1 | recalc.2
- 
-  temp.dat$errAngle <- temp.dat$ansAngle-temp.dat$pressAngle
+
+  # Recalculate angles and "errors"
+  if('tone' %in% ff) {
+    recalc.1 <- ifelse(temp.dat$ansAngle < 100 & temp.dat$toneAngle > 270,T,F)
+    temp.dat$ansAngle[recalc.1] <- temp.dat$ansAngle[recalc.1]+360               # +1,+H
+
+    recalc.2 <- ifelse(temp.dat$ansAngle>260 & temp.dat$toneAngle<100,T,F)
+    temp.dat$toneAngle[recalc.2] <- temp.dat$toneAngle[recalc.2]+360           # +H,+1    
+    temp.dat$recalc <- recalc.1 | recalc.2
+    temp.dat$errAngle <- temp.dat$ansAngle-temp.dat$toneAngle
+  } else {
+    recalc.1 <- ifelse(temp.dat$ansAngle < 100 & temp.dat$pressAngle > 270,T,F)
+    temp.dat$ansAngle[recalc.1] <- temp.dat$ansAngle[recalc.1]+360               # +1,+H
+
+    recalc.2 <- ifelse(temp.dat$ansAngle>260 & temp.dat$pressAngle<100,T,F)
+    temp.dat$pressAngle[recalc.2] <- temp.dat$pressAngle[recalc.2]+360           # +H,+1    
+    temp.dat$recalc <- recalc.1 | recalc.2
+    temp.dat$errAngle <- temp.dat$ansAngle-temp.dat$pressAngle
+  }
+
   temp.dat$errTime <- temp.dat$errAngle*clockspeed/360            # Convert angle error to time error (ms) based on 2550ms rotation time
   # errTimeEMG <- errTime+EMGdelay
   
