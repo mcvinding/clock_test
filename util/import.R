@@ -1,51 +1,73 @@
-# Import data: clock part
+'''
+Import clock-test data from raw experiment output files.
 
-folders <- c('~/clock_test/data')
+'''
+#%%##################################################################################################
+# Set working directory to the folder where the data files are located
+datapath <- c('C:\\Users\\ncb623\\clock_test\\data')
 
-subjects <- c(...)
-conditions <- c("M-press1","M-press2","W-press1","W-press2")
-in.files <- list.files()
+# Specify subjects and conditions to be imported
+subjects <- c('666')                                              # Write the subject numbers here
+conditions <- c("IB-press","IB-tone","IB-singlePress","IB-singleTone")   # Write the names of the conditions here
 
+#%%##################################################################################################
+# Settings
+clockspeed <- 2650          # Speed of the clock in ms per full rotation (2550ms in original Libet clock test)
+EMGdelay <- 65              # Average delay of EMG onset after button press (65 ms)
+
+#%%##################################################################################################
 # Import clock test data
-setwd(folders[1])
+setwd(datapath)
+
+all.files <- sort(list.files(datapath))
+in.files <- all.files[grepl(paste(subjects, collapse="|"), all.files) & grepl(paste(conditions, collapse="|"), all.files)]
 sub.data <- data.frame()
 clock.data <- data.frame()
-for (sub in 1:length(subjects)){
-  for (con in 1:length(conditions)){
-    nam <- paste("data.sub",as.character(sub),".",conditions[con], sep="")
-    
-    temp.dat <- read.csv(paste(c("subject_",subjects[sub],"_",conditions[con],".csv"),collapse=''), sep=";",header=T)
-    subID <- rep(as.character(sub),dim(temp.dat)[1])
-    temp.dat <- temp.dat[,-(11:15)]
-    
-    recalc.1 <- ifelse(temp.dat$ansAngle < 100 & temp.dat$pressAngle > 270,T,F)
-    temp.dat$ansAngle[recalc.1] <- temp.dat$ansAngle[recalc.1]+360               # +1,+H
-    recalc.2 <- ifelse(temp.dat$ansAngle>260 & temp.dat$pressAngle<100,T,F)
-    temp.dat$pressAngle[recalc.2] <- temp.dat$pressAngle[recalc.2]+360           # +H,+1    
-    recalc <- recalc.1 | recalc.2
- 
-    errAngle <- temp.dat$ansAngle-temp.dat$pressAngle
-    errTime <- errAngle*2550/360
-    errTimeEMG <- errTime+65
-  
-#     extreme <- ifelse(errorTime > 500 | errorTime < -500,T,F)
-    errors <- as.logical(temp.dat$userError) #| extreme
-    errTime[errors] <- NA
-    errTimeEMG[errors] <- NA
 
-    report <- ifelse(conditions[con] == 'M-press'| conditions[con] == 'M-press1',"M","W")
-    temp.dat <- cbind(temp.dat,errAngle,errTime,errTimeEMG,report,errors,recalc,subID)
-    
-    sub.data <- rbind(sub.data,temp.dat)
-    assign(nam, temp.dat)
+for (ff in in.files){
+  print(paste("Importing file:",ff))
+  temp.dat <- read.csv(ff, sep=";",header=T)
+
+  # Check if file is empty (no data rows)
+  if (nrow(temp.dat) == 0) {
+    print(paste("Warning: File is empty, skipping:", ff))
+    next
   }
-  nim <- paste("data.sub",as.character(sub),".","all", sep="")
-  assign(nim, sub.data)
-  clock.data <- rbind(clock.data,sub.data)
+
+  temp.dat <- temp.dat[,-(11:15)]    # Remove unnecessary columns (for now)
+    
+  # Recalculate angles and errors
+  recalc.1 <- ifelse(temp.dat$ansAngle < 100 & temp.dat$pressAngle > 270,T,F)
+  temp.dat$ansAngle[recalc.1] <- temp.dat$ansAngle[recalc.1]+360               # +1,+H
+  recalc.2 <- ifelse(temp.dat$ansAngle>260 & temp.dat$pressAngle<100,T,F)
+  temp.dat$pressAngle[recalc.2] <- temp.dat$pressAngle[recalc.2]+360           # +H,+1    
+  temp.dat$recalc <- recalc.1 | recalc.2
+ 
+  temp.dat$errAngle <- temp.dat$ansAngle-temp.dat$pressAngle
+  temp.dat$errTime <- temp.dat$errAngle*clockspeed/360            # Convert angle error to time error (ms) based on 2550ms rotation time
+  # errTimeEMG <- errTime+EMGdelay
+  
+  # Fix datatypes
+  temp.dat$id <- as.factor(temp.dat$id)
+  temp.dat$condition <- as.factor(temp.dat$condition)
+
+  # Create clean condition variable - remove trailing numbers only if they exist
+  temp.dat$condition_clean <- gsub("\\d+$", "", as.character(temp.dat$condition))
+  # Match against the predefined conditions list to ensure consistency
+  for (i in 1:length(conditions)) {
+    temp.dat$condition_clean[grepl(paste0("^", conditions[i]), temp.dat$condition_clean)] <- conditions[i]
+  }
+  temp.dat$condition_clean <- as.factor(temp.dat$condition_clean)
+  
+  # Remove errors and outliers 
+#     extreme <- ifelse(errorTime > 500 | errorTime < -500,T,F)         # Define outliers here (not recommended - always look at the data first!)
+  errors <- as.logical(temp.dat$userError) #| extreme
+  # errTime[errors] <- NA
+  # errTimeEMG[errors] <- NA
+
+  clock.data <- rbind(clock.data, temp.dat)
 }
 
-# Save data
-setwd(folders[3])
-save("clock.data",file="clockData.RData")
+#%% Save data
 
 # END

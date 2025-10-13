@@ -9,7 +9,7 @@ OPTIONS FOR CONDITIONS:
  'IB-tone': Indicate when a tone is heard. Part of the Intentional Binding paradigm. cf. Haggard et al. 2002.
  'IB-singleTone': Indicate when a single tone is heard. Part of the Intentional Binding paradigm. cf. Haggard et al. 2002.
  'IB-singlePress': Indicate when a single press is made. Part of the Intentional Binding paradigm. cf. Haggard et al. 2002.
- 'interruption': NOT IMPLEMENTED. Libertus interuptus. cf. Schurger et al. 2012.
+ 'interruption': Libertus interuptus. cf. Schurger et al. 2012.
 
 OTHER IMPORTANT SETTINGS:
     'letterMode': Whether to run in letter-memory mode (True/False). cf. Vinding et al. 2012 and Vinding et al. 2015.
@@ -47,7 +47,7 @@ tics = 12                                           # Number of tics on circle
 # Clock behavior
 clockSpeed = 2.56                                   # Rotation speed of clock (seconds per full rotation)
 clockDirection = 'clockwise'                        # 'clockwise' or 'counterclockwise'
-drawMode = 'dot'                                   # 'dot' or 'hand'
+drawMode = 'dot'                                    # 'dot' or 'hand'
 
 # Event timing
 toneOnset = [1.5, 7]                                # [earliest, latest] onset range of tone in singleTone condition (in seconds)
