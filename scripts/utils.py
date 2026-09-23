@@ -6,9 +6,10 @@ Includes a function to make a pseudo-random letter list for the letter-memory ta
 from random import shuffle, choice
 from collections import Counter
 
+##################################################################################################
+# Make pseudo-random letter mode.
 letters = ['b','c','d','g','h','k','m','n','p','r','s','t','v','w','x','z']
 
-# Make pseudo-random letter mode.
 def makeLetterList(nletters, repValues, letters=letters):
     nfwdValues = list(repValues)
     letterBlock = [0]*nletters
@@ -58,17 +59,25 @@ if __name__ == '__main__':
     print(ll)
     print(list(set(ll)))
 
+##################################################################################################
 ## CONDITION CONFIGURATION
 CONDITION_CONFIG = {
-    'W-press':        {'conid': 'W-press',        'get_press': True,  'play_tone': False, 'timeOut': False},
-    'M-press':        {'conid': 'M-press',        'get_press': True,  'play_tone': False, 'timeOut': False},
-    'singleTone':     {'conid': 'IB-singleTone',  'get_press': False, 'play_tone': True , 'timeOut': False},
-    'IB-singlePress': {'conid': 'IB-singlePress', 'get_press': True,  'play_tone': False, 'timeOut': False},
-    'IB-press':       {'conid': 'IB-press',       'get_press': True,  'play_tone': True , 'timeOut': False},
-    'IB-tone':        {'conid': 'IB-tone',        'get_press': True,  'play_tone': True , 'timeOut': False},
-    'W-interval':     {'conid': 'W-interval',     'get_press': True,  'play_tone': False, 'timeOut': False},
-    'M-interval':     {'conid': 'M-interval',     'get_press': True,  'play_tone': False, 'timeOut': False},
-    'interruption':   {'conid': 'interruption',   'get_press': True,  'play_tone': False, 'timeOut': True},
+    'W-press':        {'conid': 'W-press',        'get_press': True,  'play_tone': False, 'timeOut': False, 'letterMode': False},
+    'M-press':        {'conid': 'M-press',        'get_press': True,  'play_tone': False, 'timeOut': False, 'letterMode': False},
+
+    'singleTone':     {'conid': 'IB-singleTone',  'get_press': False, 'play_tone': True , 'timeOut': False, 'letterMode': False},
+    'IB-singlePress': {'conid': 'IB-singlePress', 'get_press': True,  'play_tone': False, 'timeOut': False, 'letterMode': False},
+    'IB-press':       {'conid': 'IB-press',       'get_press': True,  'play_tone': True , 'timeOut': False, 'letterMode': False},
+    'IB-tone':        {'conid': 'IB-tone',        'get_press': True,  'play_tone': True , 'timeOut': False, 'letterMode': False},
+
+    'distalPress':    {'conid': 'distalPress',    'get_press': True,  'play_tone': True,  'timeOut': False, 'letterMode': True},
+    'distalTone':     {'conid': 'distalTone',     'get_press': True,  'play_tone': True,  'timeOut': False, 'letterMode': True},
+    'singleDistPress':{'conid': 'singleDistPress','get_press': True,  'play_tone': False, 'timeOut': False, 'letterMode': True},
+
+    'W-interval':     {'conid': 'W-interval',     'get_press': True,  'play_tone': False, 'timeOut': False, 'letterMode': False},
+    'M-interval':     {'conid': 'M-interval',     'get_press': True,  'play_tone': False, 'timeOut': False, 'letterMode': False},
+
+    'interruption':   {'conid': 'interruption',   'get_press': True,  'play_tone': False, 'timeOut': True,  'letterMode': False},
 }
 
 def get_condition_config(condition):

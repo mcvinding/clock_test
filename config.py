@@ -1,6 +1,6 @@
 """
-Configuration file for Clock test experiment
-Modify these settings to customize your experiment
+Configuration file for Clock test experiment.
+Modify these settings to customize your experiment.
 
 OPTIONS FOR CONDITIONS: 
  'W-press': Press. Report time of intention (W-time). cf. Libet et al. 1983.
@@ -9,26 +9,40 @@ OPTIONS FOR CONDITIONS:
  'IB-tone': Indicate when a tone is heard. Part of the Intentional Binding paradigm. cf. Haggard et al. 2002.
  'IB-singleTone': Indicate when a single tone is heard. Part of the Intentional Binding paradigm. cf. Haggard et al. 2002.
  'IB-singlePress': Indicate when a single press is made. Part of the Intentional Binding paradigm. cf. Haggard et al. 2002.
+ 'singleDistPress': Use letters to delay  intention. No sound. Report when the press is made. Part of the distal intentional binding task. cf. Vinding et al. 2012.
+ 'distalPress': Use letters to delay intention. Press followed by sound. Report when the press is made. Part of the distal intentional binding task. cf. Vinding et al. 2012.
+ 'distalTone': Use letters to delay intention. Press followed by sound. Report when the tone is heard. Part of the distal intentional binding task. cf. Vinding et al. 2012.
  'interruption': Libertus interuptus. cf. Schurger et al. 2012.
 
 OTHER IMPORTANT SETTINGS:
-    'letterMode': Whether to run in letter-memory mode (True/False). cf. Vinding et al. 2012 and Vinding et al. 2015.
+    'blockRepetitions': Number of times each block will occur during the experiment (not counting training).
+    'trainingBlockRepetitions': Number of times each block will occur in training.
+
+    'trainingTrials': Number of initial training-trials per block.
+    'blockTrials': Number of trials per experimental block.
+
+    'letterMode': Whether to run in letter timing mode (None/True/False). If None, the default for the condition will be used. True or False will force to use or not use letter mode. cf. Vinding et al. 2012 and Vinding et al. 2015.
     'triggerOutput': Whether to send trigger outputs (True/False)
 
 """
 
 # ==================== EXPERIMENTAL DESIGN ====================
-# Trial and data options
+# Experimental conditions [see options above]
 condition_keys = ['IB-singleTone','IB-singlePress','IB-press','IB-tone']
+trainingCondition_keys = ['IB-press','IB-tone']     
+
+# wildcard_keys = ['Self', 'Other']
+wildcard_keys = []
+
+# Trial and data options
 blockRepetitions = 2                                # Number of times each block will occur
-trainingCondition_keys = ['IB-press','IB-tone']     # Keys to identify what type of block to run in training
 trainingBlockRepetitions = 1                        # Number of times each block will occur in training
-letterMode = False                                  # Whether to run in letter-memory mode (True/False)
+letterMode = None                                   # Whether to run in letter-memory mode (None/True/False). None will use default for the condition. True or False will force to use or not use letter mode.
 triggerOutput = False                               # Whether to send trigger outputs via parallel port (True/False)
 
 # Trials per block
 trainingTrials = 5                                  # Number of initial training-trials per block
-BlockTrials = 25                                    # Number of trials per block
+blockTrials = 20                                    # Number of trials per block
 
 # ==================== DISPLAY SETTINGS ====================
 # Monitor configuration

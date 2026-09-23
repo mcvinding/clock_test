@@ -1,10 +1,11 @@
 '''
 Clock experiment.
-Version 3, 2025.
-Useage: Run the script. Data is saved in a .csv file in a folder called "data".
+Version 3.1, 09-2026.
+Useage: Run the script in PsychoPy. Data is saved in a .csv file in a folder called "data".
 Requirements: PsychoPy 1.80 or later (www.psychopy.org).
 
-Created 2012-2025. @author(s): mc_vinding, Nygaard
+Created 2012-2026. @author(s): mc_vinding, Nygaard
+
 '''
 #----------------------- MISC -------------------------
 #------------------------------------------------------
@@ -15,13 +16,7 @@ from numpy import average
 from random import shuffle, randint, uniform
 import os, csv
 from scripts.instructions import instructions, questions
-from scripts.utils import get_condition_config
-try:
-    import winsound     # NB. There is known errors in timing using winsound (i.e. do not use)
-    import thread
-    windows = True
-except ImportError:
-    windows = False    
+from scripts.utils import get_condition_config, makeLetterList
 
 #-------------------- CONFIGURATION --------------------
 #-------------------------------------------------------
@@ -62,6 +57,7 @@ if not os.path.isdir(saveFolder):
 trialClock = core.Clock()
 soundClock = core.Clock()
 
+
 #-------------------- STIMULI ----------------------
 #---------------------------------------------------
 win = visual.Window(monitor=myMon, size=myMon.getSizePix(), fullscr=fullscr, allowGUI=False, color='black', units='deg')   # Change fullscreen here: " fullscr=True/False "
@@ -75,8 +71,7 @@ clockDotTimeOut = visual.Circle(win=win, radius=dotSize/2, fillColor='#FF0000', 
 clockHand = visual.Line(win=win, start=(0,0), end=(0,circleRadius), lineColor='white', lineWidth=3)
 clockHandTimeOut = visual.Line(win=win, start=(0,0), end=(0,circleRadius), lineColor='red', lineWidth=3)
 
-#beep = sound.Sound(1000, secs=0.1)
-beep = sound.Sound(1000, sampleRate=44100, secs=0.031, stereo=True)             # Standard tone
+beep = sound.Sound(beepHz, sampleRate=44100, secs=beepDuration, stereo=True)             # Standard tone
 
 # Make complex figure: circle + tics + fixation cross. Render and save as single stimulus "circle"
 visual.Circle(win, radius=circleRadius, edges=512, lineWidth=3, lineColor='white', fillColor=None).draw()
@@ -86,19 +81,17 @@ for angleDeg in range(0,360,int(360/tics)):
     end = [begin[0]*1.1, begin[1]*1.1]
     visual.Line(win, start=(begin[0],begin[1]), end=(end[0],end[1]), lineColor='white', lineWidth=3).draw()
 
-circle = visual.BufferImageStim(win)                                                    # Buffer it all in "circle" object
+circle = visual.BufferImageStim(win)           # Buffer it all in "circle" object
 win.clearBuffer()
 
 if clockDirection == 'counterclockwise':
     dotStep = -dotStep
 
 # Setup additional settings
-if letterMode:
-    from scripts.utils import letters, makeLetterList
-    blankSpace = visual.TextStim(win, text='', color='black', height=textSize, antialias=False)
-    letterStim = visual.TextStim(win, color='white', height=textSize, antialias=False)
-    letterClock = core.Clock()
-    
+blankSpace = visual.TextStim(win, text='', color='black', height=textSize, antialias=False)
+letterStim = visual.TextStim(win, color='white', height=textSize, antialias=False)
+letterClock = core.Clock()
+
 if triggerOutput:
     from scripts.trigger_out import trigger
 else:
@@ -108,11 +101,11 @@ else:
 #-------------------- FUNCTIONS ----------------------
 #-----------------------------------------------------
 # Make a list of trials (dictionaries) given a condition
-def makeBlock(condition,training):
+def makeBlock(condition, training):
     if training == True:
         conditionRep = trainingTrials          # Set number of training repetitions? 
     else:
-        conditionRep = BlockTrials             # Set number of repetitions? 
+        conditionRep = blockTrials             # Set number of repetitions? 
         
     # Make a trialList with trialsPerPrime of each prime
     tmpTrials = [dict(dataDict.items()) for rep in range(conditionRep)]
@@ -162,15 +155,8 @@ elif drawMode == 'hand':
             clockHandTimeOut.setEnd([x,y])
             clockHandTimeOut.draw()
 
-# Play beep on windows [THIS FUNCTION IS NOT USED!]
-def windowsBeep():
-    lock = thread.allocate_lock()
-    lock.acquire()                                                                      # Entering critical section
-    winsound.Beep(beepHz, int(beepDuration*msScale))
-    lock.release()                                                                      # Exiting critical section
-
 # Run a block of trials and save results
-def runBlock(condition, training, letterMode=False):
+def runBlock(condition, training):
     trialList = makeBlock(condition, training)
     
     # Configure block
@@ -179,6 +165,8 @@ def runBlock(condition, training, letterMode=False):
     get_press = cfg['get_press']
     play_tone = cfg['play_tone']
     timeOut = cfg['timeOut']
+    # Override letterMode from config if it's not None, otherwise use condition default
+    block_letterMode = cfg['letterMode'] if letterMode is None else letterMode
 
     # Time out logic initialization (per block)
     timeOutCounter = 0
@@ -194,11 +182,21 @@ def runBlock(condition, training, letterMode=False):
         csvWriter = csv.writer(open(saveFile, 'w', newline=''), delimiter=';').writerow     # The writer function to csv
         csvWriter(dataCategories)                                                           # Writes title-row in csv           
 
+    # Prepare instructions
+    block_wildcard = [x for x in wildcard_keys if x in str(condition)]
+
+    if block_wildcard:
+        print(block_wildcard)
+        instruct = block_wildcard[0].upper() + '\n\n' + instructions[conid]
+    else:
+        instruct = instructions[conid]
+
     # Show instruction
-    mainText.setText(instructions[conid])
+    mainText.setText(instruct)
     mainText.draw()
     win.flip()
-    event.waitKeys(keyList=ansKeys)
+    response = event.waitKeys(keyList=ansKeys+quitKeys)
+    if response[-1] in quitKeys: core.quit()
 
     # Loop through trials
     for trial in trialList:
@@ -207,9 +205,9 @@ def runBlock(condition, training, letterMode=False):
             mainText.setText('TRAINING')                                                # Show "TRAINING" instead of prime in training condition
         
         # Prepare trial
-        questionText.setText(questions[conid])                                      # Set text of question
-        dotAngle = uniform(0,360)                                                   # Angle of dot in degrees
-        dotDelayFrames = 0                                                          # When not 0, indicates that the last event has occurred and the number of frames since that event
+        questionText.setText(questions[conid])         # Set text of question
+        dotAngle = uniform(0,360)                      # Angle of dot in degrees
+        dotDelayFrames = 0                             # When not 0, indicates that the last event has occurred and the number of frames since that event
         userError = False
         beepTime = trial['toneOnset']                  # Time of beep (0=unset, for non toneOnset conditions)
         
@@ -244,7 +242,7 @@ def runBlock(condition, training, letterMode=False):
         timeOutLogic = False
         trialCounter = trialCounter + 1
         
-        if letterMode:
+        if block_letterMode:
             letterShifted = False
             letterCounter = 0
             letterBlock = makeLetterList(nletters, nfwdValues)
@@ -260,7 +258,7 @@ def runBlock(condition, training, letterMode=False):
                 dotAngle -= 360
             circle.draw()
             
-            if letterMode:
+            if block_letterMode:
                 if letterClock.getTime() > letterDisplayTime:
                     letterCounter = letterCounter + 1
                     letterShifted = True
@@ -309,7 +307,7 @@ def runBlock(condition, training, letterMode=False):
                 else:
                     dotDelayFrames = 1   # Mark as last event
                 
-                if letterMode:
+                if block_letterMode:
                     trial['nFwd'] = 'NaN'  # Default value
                     for nfwd in nfwdValues:
                         if letterCounter >= nfwd and letterBlock[letterCounter] == letterBlock[letterCounter - nfwd]:
@@ -426,26 +424,32 @@ def trainingIsOver():
     questionText.setText('Training is over \n\nGet ready...')                                      # !!!!!! Set text
     questionText.draw()
     win.flip()
-    event.waitKeys()
+    response = event.waitKeys()
+    if response[-1] in quitKeys: core.quit()
+    
 
 def ThankYou():
-    questionText.setText('This part of the experiment is over now \n\nThank You... :)')                                      # !!!!!! Set text
+    questionText.setText('This part of the experiment is over now \n\nThank You :)')                                      # !!!!!! Set text
     questionText.draw()
     win.flip()
-    event.waitKeys() #    event.waitKeys(ansKeys)
+    response = event.waitKeys() 
 
-#--------------- RUN EXPERIMENT ------------------
-#-------------------------------------------------
+#---------------------- RUN EXPERIMENT ----------------------#
+#------------------------------------------------------------#
 # Make random order of conditions and run experiment
-conditions = [x + str(y+1) for x in condition_keys for y in range(blockRepetitions)]
+_wildcard_list = wildcard_keys if wildcard_keys else ['']
+conditions = [x + z + str(y+1) for x in condition_keys for y in range(blockRepetitions) for z in _wildcard_list]
 shuffle(conditions)
 conditionsT = [x + str(y+1) for x in trainingCondition_keys for y in range(trainingBlockRepetitions)]
 
+# print(conditionsT)
+print(conditions)
+
 # Run the experiment
 for condition in conditionsT:
-    runBlock(condition, training=True, letterMode=letterMode)
+    runBlock(condition, training=True)
 trainingIsOver()
 for condition in conditions: 
-    runBlock(condition, training=False, letterMode=letterMode)
+    runBlock(condition, training=False)
 ThankYou()
 core.quit()
