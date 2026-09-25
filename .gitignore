@@ -1,5 +1,11 @@
 # Gitignore
 
+# Folders
 __pycache__
 data/
-util/.Rhistory
+raw_data/
+documents/
+
+# Filetypes
+*.Rhistory
+*.pyc

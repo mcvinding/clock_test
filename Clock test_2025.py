@@ -1,10 +1,10 @@
 '''
 Clock experiment.
 Version 3.1, 09-2026.
-Useage: Run the script in PsychoPy. Data is saved in a .csv file in a folder called "data".
+Useage: Run the script in PsychoPy. Data is saved in a .csv file in a folder called "raw_data".
 Requirements: PsychoPy 1.80 or later (www.psychopy.org).
 
-Created 2012-2026. @author(s): mc_vinding, Nygaard
+Created 2012-2026. @author(s): mcvinding, Nygaard
 
 '''
 #----------------------- MISC -------------------------
@@ -15,8 +15,8 @@ from math import sin, cos, radians
 from numpy import average
 from random import shuffle, randint, uniform
 import os, csv
-from scripts.instructions import instructions, questions
-from scripts.utils import get_condition_config, makeLetterList
+from util.instructions import instructions, questions
+from util.utils import get_condition_config, makeLetterList
 
 #-------------------- CONFIGURATION --------------------
 #-------------------------------------------------------
@@ -49,7 +49,6 @@ if dialogue.OK:
 else: core.quit()
 
 # Make folder for data
-saveFolder = 'data'
 if not os.path.isdir(saveFolder): 
     os.makedirs(saveFolder)
 
@@ -165,7 +164,6 @@ def runBlock(condition, training):
     get_press = cfg['get_press']
     play_tone = cfg['play_tone']
     timeOut = cfg['timeOut']
-    # Override letterMode from config if it's not None, otherwise use condition default
     block_letterMode = cfg['letterMode'] if letterMode is None else letterMode
 
     # Time out logic initialization (per block)
@@ -208,7 +206,7 @@ def runBlock(condition, training):
         questionText.setText(questions[conid])         # Set text of question
         dotAngle = uniform(0,360)                      # Angle of dot in degrees
         dotDelayFrames = 0                             # When not 0, indicates that the last event has occurred and the number of frames since that event
-        userError = False
+        trial['userError'] = False
         beepTime = trial['toneOnset']                  # Time of beep (0=unset, for non toneOnset conditions)
         
         # Calculate timeout time for this trial if timeOut condition
@@ -300,7 +298,6 @@ def runBlock(condition, training):
                 if not get_press:
                     print('Error') # make some feedback not to press if not supposd to press
                     trial['userError'] = True
-                    userError = True
                     
                 if play_tone:
                     beepTime = trial['pressOnset']+toneDelay   # Set time for beep
@@ -315,7 +312,7 @@ def runBlock(condition, training):
                             break  # Stop at first match
                     trial['stopCharacter'] = letterBlock[letterCounter]
 
-            if userError:
+            if trial['userError']:
                 break
             
             # Check for timeout interruption
@@ -340,7 +337,7 @@ def runBlock(condition, training):
                     break
                 dotDelayFrames += 1
 
-        if userError:
+        if trial['userError']:
             mainText.setText('Error. Do not press the key this round.\n(Press key to continue)')                                      # !!!!!! Set text
             mainText.draw()
             win.flip()
@@ -432,7 +429,7 @@ def ThankYou():
     questionText.setText('This part of the experiment is over now \n\nThank You :)')                                      # !!!!!! Set text
     questionText.draw()
     win.flip()
-    response = event.waitKeys() 
+    response = event.waitKeys(keys=quitKeys) 
 
 #---------------------- RUN EXPERIMENT ----------------------#
 #------------------------------------------------------------#

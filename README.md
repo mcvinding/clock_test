@@ -51,7 +51,7 @@ You can easily customize the adaptive timeout algorithm behavior by editing the 
 
 ### Data Output
 
-Results are automatically saved as CSV files in the `data/` folder with the naming convention: `subject_[ID]_[condition][wildcard][#].csv`
+Results are automatically saved as CSV files in the `raw_data/` folder with the naming convention: `subject_[ID]_[condition][wildcard][#].csv`
 
 Data columns include: id, condition, trial number, clock angles, response times, letter-mode fields (nFwd, stopCharacter), timeout data, and trigger codes. See `config.py` `dataCategories` for complete list.
 
