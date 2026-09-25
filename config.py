@@ -111,7 +111,7 @@ quitKeys = ['q','esc','escape']
 dataCategories = ['id','condition','no','dotDelay','toneOnset','toneAngle','pressOnset','pressAngle','ansAngle','ansTime','timeOut','timeOutOnset','timeOutQuestion','stopCharacter','nFwd','userError','response']
 
 # File paths
-saveFolder = 'data'
+saveFolder = 'raw_data'
 
 # ==================== DERIVED SETTINGS ====================
 # These are calculated from other settings - usually don't need to change
