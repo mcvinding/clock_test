@@ -31,7 +31,7 @@ OTHER IMPORTANT SETTINGS:
 condition_keys = ['IB-singleTone','IB-singlePress','IB-press','IB-tone']
 trainingCondition_keys = ['IB-press','IB-tone']     
 
-wildcard_keys = []
+wildcard_keys = ['Self','Other']                 # Optional condition modifiers that can be used to denote experimental manipulations that are  not covered by the standard conditions (e.g., ['Self', 'Other']). The woildcard keys will be appended to condition names but will not affect the run. The experiment will run with all conditions and repetition for each wildcard. Leave empty list if not used.
 
 # Trial and data options
 blockRepetitions = 2                                # Number of times each block will occur
