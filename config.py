@@ -31,8 +31,7 @@ OTHER IMPORTANT SETTINGS:
 condition_keys = ['IB-singleTone','IB-singlePress','IB-press','IB-tone']
 trainingCondition_keys = ['IB-press','IB-tone']     
 
-wildcard_keys = ['Self', 'Other']
-# wildcard_keys = []
+wildcard_keys = []
 
 # Trial and data options
 blockRepetitions = 2                                # Number of times each block will occur
@@ -41,8 +40,8 @@ letterMode = None                                   # Whether to run in letter-m
 triggerOutput = False                               # Whether to send trigger outputs via parallel port (True/False)
 
 # Trials per block
-trainingTrials = 0                                  # Number of initial training-trials per block
-blockTrials = 5                                  # Number of trials per block
+trainingTrials = 5                                  # Number of initial training-trials per block
+blockTrials = 20                                    # Number of trials per block
 
 # ==================== DISPLAY SETTINGS ====================
 # Monitor configuration
@@ -61,7 +60,7 @@ tics = 12                                           # Number of tics on circle
 # Clock behavior
 clockSpeed = 2.56                                   # Rotation speed of clock (seconds per full rotation)
 clockDirection = 'clockwise'                        # 'clockwise' or 'counterclockwise'
-drawMode = 'dot'                                    # 'dot' or 'hand'
+drawMode = 'hand'                                   # 'dot' or 'hand'
 
 # Event timing
 toneOnset = [1.5, 7]                                # [earliest, latest] onset range of tone in singleTone condition (in seconds)

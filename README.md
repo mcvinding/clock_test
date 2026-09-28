@@ -30,15 +30,21 @@ You can easily customize the adaptive timeout algorithm behavior by editing the 
 - `fullscr`: Set to `True` for fullscreen mode (recommended for experiments).
 - `framerate`: Set the framerate of monitor (in Hz)
 
+#### Audio Settings
+
+Audio device must be set in PsychoPy preferences. The script will use the default audio device. Aways make sure to test the audio output before running the experiment as the timing might vary from device to device.
+
+In the PsychoPy Coder view, you can set the audio device by going to `Files` > `Preferences` > `Hardware` > `Audio` and selecting the desired output device from the drop down menu.
+
 #### Experimental Design
 
 - `condition_keys`: Choose which conditions to include (see table below).
 - `blockRepetitions`: Number of repetitions of each condition block.
 - `blockTrials`: Number of trials per block.
-- `letterMode`: Override letter-memory mode per condition (None=use default, True/False=force option).
+- `letterMode`: Display a string of letters one a the time in the middle of the clock (`None`=use default for the condition, `True`/`False`=force option).
 - `trainingCondition_keys`: Conditions for practice trials.
-- `trainingTrials`: Number of practice trials per condition.
-- `wildcard_keys`: Optional condition modifiers (e.g., ['Self', 'Other']) appended to condition names that will not affect the run. The experiment will run with all conditions and repetition for each wildcard.
+- `trainingTrials`: Number of practice trials per training condition.
+- `wildcard_keys`: Optional condition modifiers that can be used to denote experimental manipulations that are  not covered by the standard conditions (e.g., ['Self', 'Other']). The woildcard keys will be appended to condition names but will not affect the run. The experiment will run with all conditions and repetition for each wildcard. Leave empty list if not used.
 
 #### Clock appearance
 
@@ -57,21 +63,20 @@ Data columns include: id, condition, trial number, clock angles, response times,
 
 ### OPTIONS FOR CONDITIONS:
 
-this task can run several versions of task based on the Libet-clock method first described by Libet et al. (1983). Set which conditions to run in the experiments by specifying relevant keys in the `condition_keys` variable.
+This script can run several versions of task based on the Libet-clock method first described by Libet et al. (1983). Set which conditions to run in the experiments by specifying relevant keys in the `condition_keys` variable.
 
 | Condition | Description | Original reference |
 |-----------|-------------|-----------|
 | `W-press` | Press. Report time of intention (W-time) | Libet et al. 1983 |
-| `M-press` | Press. Report time of intention (M-time) | Libet et al. 1983 |
+| `M-press` | Press. Report time of the movement (M-time) | Libet et al. 1983 |
 | `IB-press` | Press+tone. Indicate when a press is made. Part of the Intentional Binding paradigm | Haggard et al. 2002 |
 | `IB-tone` | Press+tone. Indicate when a tone is heard. Part of the Intentional Binding paradigm | Haggard et al. 2002 |
 | `IB-singleTone` | Tone. Indicate when a single tone is heard. Part of the Intentional Binding paradigm | Haggard et al. 2002 |
 | `IB-singlePress` | Press. Indicate when a single press is made. Part of the Intentional Binding paradigm | Haggard et al. 2002 |
-| `singleDistPress` | Distal press with letters, no tone | Vinding et al. 2012 |
-| `distalPress` | Distal press with letters and tone | Vinding et al. 2012 |
-| `distalTone` | Distal tone with letters (requires letterMode) | Vinding et al. 2012 |
+| `singleDistPress` | Delayed intentions timed with letters, no tone | Vinding et al. 2012 |
+| `distalPress` | Delayed intentions timed with letters. Press followed by a tone. Report press time | Vinding et al. 2012 |
+| `distalTone` | Delayed intentions timed letters. Press followed by a tone. Report tone time | Vinding et al. 2012 |
 | `interruption` | Press with adaptive random timeout and interruptions | Schurger et al. 2012 |
-
 
 ## Permissions
 
@@ -99,13 +104,13 @@ Please report any issues or bugs to the author or the repository's issue tracker
 
 1. **Validate timing precision** on your hardware before data collection.
 2. **Test audio latency** and synchronization with visual events.
-3. **Verify trigger timing** if using EEG/physiological recording.
+3. **Verify trigger timing** if using EEG/physiological recording and TTL out.
 4. **Test adaptive timeout** algorithm behavior with pilot sessions for interruption condition.
 5. **Run pilot sessions** to ensure stable performance.
 
 ### Theoretical Note
 
-This task measures subjective timing reports and neural correlates of action preparation. It does not provide evidence for or against free will, regardless of claims in popular media or some academic interpretations.
+This task measures subjective timing reports and neural correlates of action preparation. It does not provide evidence for or against free will, regardless of claims in popular media or  academic interpretations.
 
 ## Contact
 

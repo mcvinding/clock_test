@@ -56,7 +56,6 @@ if not os.path.isdir(saveFolder):
 trialClock = core.Clock()
 soundClock = core.Clock()
 
-
 #-------------------- STIMULI ----------------------
 #---------------------------------------------------
 win = visual.Window(monitor=myMon, size=myMon.getSizePix(), fullscr=fullscr, allowGUI=False, color='black', units='deg')   # Change fullscreen here: " fullscr=True/False "
