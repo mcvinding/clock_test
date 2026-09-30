@@ -31,7 +31,7 @@ OTHER IMPORTANT SETTINGS:
 condition_keys = ['IB-singleTone','IB-singlePress','IB-press','IB-tone']
 trainingCondition_keys = ['IB-press','IB-tone']     
 
-wildcard_keys = []
+wildcard_keys = ['Self','Other']                 # Optional condition modifiers that can be used to denote experimental manipulations that are  not covered by the standard conditions (e.g., ['Self', 'Other']). The woildcard keys will be appended to condition names but will not affect the run. The experiment will run with all conditions and repetition for each wildcard. Leave empty list if not used.
 
 # Trial and data options
 blockRepetitions = 2                                # Number of times each block will occur
@@ -41,13 +41,13 @@ triggerOutput = False                               # Whether to send trigger ou
 
 # Trials per block
 trainingTrials = 5                                  # Number of initial training-trials per block
-blockTrials = 20                                    # Number of trials per block
+blockTrials = 15                                    # Number of trials per block
 
 # ==================== DISPLAY SETTINGS ====================
 # Monitor configuration
 monDistance = 70                                    # Distance from subject eyes to monitor (in cm)
 monWidth = 30                                       # Width of monitor display (in cm)
-fullscr = False                                     # Run in fullscreen mode (set to True for experiments)
+fullscr = True                                      # Run in fullscreen mode (set to True for experiments)
 framerate = 60                                      # Framerate of monitor (in Hz)
 
 # Visual appearance

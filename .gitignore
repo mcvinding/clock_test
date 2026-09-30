@@ -4,8 +4,10 @@
 __pycache__
 data/
 raw_data/
-documents/
+# documents/
 
 # Filetypes
 *.Rhistory
 *.pyc
+*.docx
+*.tmp
