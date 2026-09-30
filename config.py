@@ -41,13 +41,13 @@ triggerOutput = False                               # Whether to send trigger ou
 
 # Trials per block
 trainingTrials = 5                                  # Number of initial training-trials per block
-blockTrials = 20                                    # Number of trials per block
+blockTrials = 15                                    # Number of trials per block
 
 # ==================== DISPLAY SETTINGS ====================
 # Monitor configuration
 monDistance = 70                                    # Distance from subject eyes to monitor (in cm)
 monWidth = 30                                       # Width of monitor display (in cm)
-fullscr = False                                     # Run in fullscreen mode (set to True for experiments)
+fullscr = True                                      # Run in fullscreen mode (set to True for experiments)
 framerate = 60                                      # Framerate of monitor (in Hz)
 
 # Visual appearance

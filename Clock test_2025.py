@@ -422,13 +422,12 @@ def trainingIsOver():
     win.flip()
     response = event.waitKeys()
     if response[-1] in quitKeys: core.quit()
-    
 
 def ThankYou():
     questionText.setText('This part of the experiment is over now \n\nThank You :)')                                      # !!!!!! Set text
     questionText.draw()
     win.flip()
-    response = event.waitKeys(keys=quitKeys) 
+    response = event.waitKeys(keyList=quitKeys) 
 
 #---------------------- RUN EXPERIMENT ----------------------#
 #------------------------------------------------------------#
