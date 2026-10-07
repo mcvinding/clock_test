@@ -8,12 +8,12 @@
 datapath <- c('C:\\Users\\ncb623\\clock_test')
 
 # Specify subjects and conditions to be imported
-subjects <- c('333', '666')                                              # Write the subject numbers here
+subjects <- c()                                              # Write the subject numbers here
 conditions <- c("IB-press","IB-tone","IB-singlePress","IB-singleTone")   # Write the names of the conditions here
 
 wildcard_keys <- c('Self', 'Other')
 
-raw.path <- file.path(datapath, 'raw_data')
+raw.path <- file.path(datapath, 'IB_data')
 out.path <- file.path(datapath, 'data')
 
 #%%##################################################################################################

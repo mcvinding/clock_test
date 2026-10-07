@@ -27,13 +27,13 @@ clock_test/
 
 ## Initial configuration
 
-Before running the script, you should change the `datapath` and `subjects` variables in the import script to match the location on your machine and the id codes of your research participants:
+Before running the script, you should change the `datapath` and `subjects` variables in the import script to match the location on your machine and the id codes of your research participants (you can leave subjects empty if there are no other files in the folder with the raw data and it will read all files):
 
 ```r
 # Data directory path
 datapath <- c('C:\\Users\\ncb623\\clock_test')
 
-# Subject IDs to import
+# Subject IDs to import.
 subjects <- c('666')  # Add your subject IDs here
 
 # Experimental conditions. For example, if your experiment includes conditions like "IB-press" and "IB-tone", list them here:

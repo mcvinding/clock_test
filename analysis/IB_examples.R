@@ -7,8 +7,8 @@
 ###
 
 # Settings
-use_condition2 <- FALSE    # Use wilcard conditions if available
-min_trials <- 2           # Minimum number of trials per condition required for a subject to be included in the analysis
+use_condition2 <- TRUE    # Use wildcard conditions if available
+min_trials <- 10           # Minimum number of trials per condition required for a subject to be included in the analysis
 
 remove_outliers <- FALSE
 max_cutoff <- 500         # ms
@@ -16,7 +16,7 @@ min_cutoff <- -500        # ms
 
 # Input
 datapath <- c('C:\\Users\\ncb623\\clock_test\\data')
-infname <- file.path(datapath, paste0("combined_cleaned_data.csv"))
+infname <- file.path(datapath, paste0("combined_cleaned_data_2026-10-07.csv"))
 outfname <- file.path(datapath, paste0("ib_data_", Sys.Date(), ".csv"))
 
 clock.data <- read.csv(infname, header=T)
@@ -35,7 +35,7 @@ if (use_condition2) {
 # Report missing conditions
 missing_conditions <- condition_check[!condition_check$present, ]
 if (nrow(missing_conditions) > 0) {
-  cat("Warning: Missing conditions found:\n")
+  cat("Warning: Missing conditions\n")
   for (i in 1:nrow(missing_conditions)) {
     if (use_condition2) {
       cat(paste("Subject", missing_conditions$id[i], "missing condition:", missing_conditions$condition1[i], "+", missing_conditions$condition2[i], "\n"))
@@ -104,7 +104,7 @@ agg.data <- agg.data[order(agg.data$id),]
 agg.data$include <- agg.data$nTrials >= min_trials
 n_excluded <- sum(!agg.data$include)
 if (n_excluded > 0) {
-  cat("Flagged", n_excluded, "condition(s) as excluded due to fewer than", min_trials, "trials\n")
+  cat("Flagged", n_excluded, "condition(s) as excluded due to fewer than", min_trials, "trials\nMean N trials per condition:", round(mean(agg.data$nTrials), digits=1))
 }
 
 #%% Calculate intentional binding (IB) effects
@@ -152,5 +152,9 @@ for (subj in unique(agg.data$id)) {
   }
 }
 
+ib.data$id <- as.factor(ib.data$id)
+
 ## SAVE DATA
 write.csv(ib.data, file="ib_data.csv", row.names=FALSE)
+
+#END
